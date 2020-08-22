@@ -5,29 +5,36 @@ import { getTodos, addTodo, deleteTodo } from './Requests';
 function App() {
   const [ todoList, updateTodoList ] = useState([]);
   const [ inputTitleValue, updateInputTitleValue ] = useState('');
+  const [ textareaValue, updateTextareaValue ] = useState('');
 
-  useEffect(() => {
+  const getAndRenderTodos = () => {
     getTodos().then(resp => {
       updateTodoList(resp.data);
     })
+  }
+
+  useEffect(() => {
+    getAndRenderTodos();
   }, [])
 
   const addNewTodo = event => {
     event.preventDefault();
-    addTodo({title: inputTitleValue}).then(() => {
-      getTodos().then(resp => {
-        updateInputTitleValue('')
-        updateTodoList(resp.data)
-      })
+
+    let newTodo = {
+      title: inputTitleValue,
+      description: textareaValue,
+    }
+
+    addTodo(newTodo).then(() => {
+        updateInputTitleValue('');
+        updateTextareaValue('');
+        getAndRenderTodos();
     })
   }
 
   const deleteTodoFromList = id => {
     deleteTodo(id).then(() => {
-      getTodos().then(resp => {
-        updateInputTitleValue('')
-        updateTodoList(resp.data)
-      })
+      getAndRenderTodos();
     })
   }
 
@@ -44,6 +51,13 @@ function App() {
               type="text"
               placeholder="Enter title"
             />
+
+            <textarea
+              onChange={event => {updateTextareaValue(event.target.value)}}
+              value={textareaValue}
+              placeholder="Enter description"
+            />
+
             <button onClick={addNewTodo}>ADD TODO</button>
           </form>
 
@@ -52,7 +66,7 @@ function App() {
             return (
               <li key={todo.id}>
                 <h2>{todo.title}</h2>
-                <span>{todo.author}</span>
+                <p>{todo.description}</p>
                 <button onClick={() => { deleteTodoFromList(todo.id) }}>DELETE</button>
               </li>
             )
