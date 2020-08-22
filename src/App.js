@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { getTodos, addTodo } from './Requests';
+import { getTodos, addTodo, deleteTodo } from './Requests';
 
 function App() {
   const [ todoList, updateTodoList ] = useState([]);
@@ -16,6 +16,16 @@ function App() {
     event.preventDefault();
     addTodo({title: inputTitleValue}).then(() => {
       getTodos().then(resp => {
+        updateInputTitleValue('')
+        updateTodoList(resp.data)
+      })
+    })
+  }
+
+  const deleteTodoFromList = id => {
+    deleteTodo(id).then(() => {
+      getTodos().then(resp => {
+        updateInputTitleValue('')
         updateTodoList(resp.data)
       })
     })
@@ -43,6 +53,7 @@ function App() {
               <li key={todo.id}>
                 <h2>{todo.title}</h2>
                 <span>{todo.author}</span>
+                <button onClick={() => { deleteTodoFromList(todo.id) }}>DELETE</button>
               </li>
             )
           })}
