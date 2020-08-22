@@ -1,25 +1,57 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import { getTodos, addTodo } from './Requests';
 
 function App() {
+  const [ todoList, updateTodoList ] = useState([]);
+  const [ inputTitleValue, updateInputTitleValue ] = useState('');
+
+  useEffect(() => {
+    getTodos().then(resp => {
+      updateTodoList(resp.data);
+    })
+  }, [])
+
+  const addNewTodo = event => {
+    event.preventDefault();
+    addTodo({title: inputTitleValue}).then(() => {
+      getTodos().then(resp => {
+        updateTodoList(resp.data)
+      })
+    })
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <nav></nav>
+      <main>
+        <h1>Todo list</h1>
+
+          <form>
+            <input
+              onChange={event => {updateInputTitleValue(event.target.value)}}
+              value={inputTitleValue}
+              type="text"
+              placeholder="Enter title"
+            />
+            <button onClick={addNewTodo}>ADD TODO</button>
+          </form>
+
+        <ul>
+          {todoList.map( todo => {
+            return (
+              <li key={todo.id}>
+                <h2>{todo.title}</h2>
+                <span>{todo.author}</span>
+              </li>
+            )
+          })}
+        </ul>
+      </main>
+      <footer>
+        <p>All rights reserved 2020 (c)</p>
+      </footer>
+    </>
   );
 }
 
