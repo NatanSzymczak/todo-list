@@ -3,6 +3,7 @@ import './App.css';
 import { getTodos, deleteTodo } from './Requests';
 import TodoForm from './Components/TodoForm/TodoForm';
 import TodoList from './Components/TodoList/TodoList';
+import Footer from './Components/Footer/Footer';
 
 function App() {
   const [ todoList, updateTodoList ] = useState([]);
@@ -36,11 +37,7 @@ function App() {
             />
         </div>
       </main>
-      <footer>
-        <div className="container">
-          <p>All rights reserved 2020 (c)</p>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }
