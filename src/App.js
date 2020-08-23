@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { getTodos, addTodo, deleteTodo } from './Requests';
+import { getTodos, deleteTodo } from './Requests';
+import TodoForm from './Components/TodoForm/TodoForm';
+import TodoList from './Components/TodoList/TodoList';
 
 function App() {
   const [ todoList, updateTodoList ] = useState([]);
-  const [ inputTitleValue, updateInputTitleValue ] = useState('');
-  const [ textareaValue, updateTextareaValue ] = useState('');
+
 
   const getAndRenderTodos = () => {
     getTodos().then(resp => {
@@ -17,22 +18,7 @@ function App() {
     getAndRenderTodos();
   }, [])
 
-  const addNewTodo = event => {
-    event.preventDefault();
-
-    let newTodo = {
-      title: inputTitleValue,
-      description: textareaValue,
-    }
-
-    addTodo(newTodo).then(() => {
-        updateInputTitleValue('');
-        updateTextareaValue('');
-        getAndRenderTodos();
-    })
-  }
-
-  const deleteTodoFromList = id => {
+  const deleteTodoAndRenderList = id => {
     deleteTodo(id).then(() => {
       getAndRenderTodos();
     })
@@ -42,39 +28,19 @@ function App() {
     <>
       <nav></nav>
       <main>
-        <h1>Todo list</h1>
-
-          <form>
-            <input
-              onChange={event => {updateInputTitleValue(event.target.value)}}
-              value={inputTitleValue}
-              type="text"
-              placeholder="Enter title"
+        <div className="container">
+          <h1>Todo list</h1>
+            <TodoForm updateTodoList={getAndRenderTodos}/>
+            <TodoList
+              todoList={todoList}
+              deleteTodoAndRenderList={deleteTodoAndRenderList}
             />
-
-            <textarea
-              onChange={event => {updateTextareaValue(event.target.value)}}
-              value={textareaValue}
-              placeholder="Enter description"
-            />
-
-            <button onClick={addNewTodo}>ADD TODO</button>
-          </form>
-
-        <ul>
-          {todoList.map( todo => {
-            return (
-              <li key={todo.id}>
-                <h2>{todo.title}</h2>
-                <p>{todo.description}</p>
-                <button onClick={() => { deleteTodoFromList(todo.id) }}>DELETE</button>
-              </li>
-            )
-          })}
-        </ul>
+        </div>
       </main>
       <footer>
-        <p>All rights reserved 2020 (c)</p>
+        <div className="container">
+          <p>All rights reserved 2020 (c)</p>
+        </div>
       </footer>
     </>
   );
