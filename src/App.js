@@ -7,16 +7,15 @@ import TodoList from './Components/TodoList/TodoList';
 function App() {
   const [ todoList, updateTodoList ] = useState([]);
 
+  useEffect(() => {
+    getAndRenderTodos();
+  }, [])
 
   const getAndRenderTodos = () => {
     getTodos().then(resp => {
       updateTodoList(resp.data);
     })
   }
-
-  useEffect(() => {
-    getAndRenderTodos();
-  }, [])
 
   const deleteTodoAndRenderList = id => {
     deleteTodo(id).then(() => {
