@@ -4,9 +4,12 @@ import { getTodos, deleteTodo } from './Requests';
 import TodoForm from './Components/TodoForm/TodoForm';
 import TodoList from './Components/TodoList/TodoList';
 import Footer from './Components/Footer/Footer';
+import Modal from './Components/Modal/Modal';
 
 function App() {
   const [ todoList, updateTodoList ] = useState([]);
+  const [ isModalOpen, toggleModal ] = useState(false);
+  const [ editedTodo, changeEditedTodo ] = useState({});
 
   useEffect(() => {
     getAndRenderTodos();
@@ -24,6 +27,16 @@ function App() {
     })
   }
 
+  const openEditModal = todo => {
+    changeEditedTodo(todo);
+    toggleModal(true);
+  }
+
+  const closeEditModal = () => {
+    changeEditedTodo({});
+    toggleModal(false);
+  }
+
   return (
     <>
       <nav></nav>
@@ -34,8 +47,10 @@ function App() {
             <TodoList
               todoList={todoList}
               deleteTodoAndRenderList={deleteTodoAndRenderList}
+              openEditModal={openEditModal}
             />
         </div>
+        { isModalOpen && <Modal todo={editedTodo} getAndRenderTodos={getAndRenderTodos} closeModal={closeEditModal} /> }
       </main>
       <Footer />
     </>

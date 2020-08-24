@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { addTodo } from '../../Requests';
+import React, { useState, useEffect } from 'react';
+import { addTodo, editTodo } from '../../Requests';
 import './TodoForm.css';
 
-function TodoForm({ updateTodoList }) {
+function TodoForm({ updateTodoList, editedTodo }) {
   const [ todoTitle, updateTodoTitle ] = useState('');
   const [ todoDesc, updateTodoDesc ] = useState('');
   const [ todoPrior, updateTodoPrior ] = useState('');
@@ -11,7 +11,15 @@ function TodoForm({ updateTodoList }) {
   const [ todoDescValidation, updateTodoDescValidation ] = useState('');
   const [ todoPriorValidation, updateTodoPriorValidation ] = useState('');
 
-  const addNewTodo = event => {
+  useEffect(() => {
+    if (editedTodo) {
+      updateTodoTitle(editedTodo.title);
+      updateTodoDesc(editedTodo.description);
+      updateTodoPrior(editedTodo.priority);
+    }
+  }, [editedTodo])
+
+  const submitTodo = event => {
     event.preventDefault();
 
     if (todoTitle.length < 3) {
@@ -42,12 +50,21 @@ function TodoForm({ updateTodoList }) {
       priority: todoPrior,
     }
 
-    addTodo(newTodo).then(() => {
-      updateTodoTitle('');
-      updateTodoDesc('');
-      updateTodoPrior('');
-      updateTodoList();
-    })
+    if(editedTodo) {
+      editTodo(editedTodo.id, newTodo).then(() => {
+        updateTodoTitle('');
+        updateTodoDesc('');
+        updateTodoPrior('');
+        updateTodoList();
+      })
+    } else {
+      addTodo(newTodo).then(() => {
+        updateTodoTitle('');
+        updateTodoDesc('');
+        updateTodoPrior('');
+        updateTodoList();
+      })
+    }
   }
 
   return (
@@ -98,7 +115,11 @@ function TodoForm({ updateTodoList }) {
 
 
 
-      <button className="btn btn-success" onClick={addNewTodo}>ADD TODO</button>
+      <button
+        className="btn btn-success"
+        onClick={submitTodo}>
+          {editedTodo ? 'SAVE' : 'ADD TODO'}
+      </button>
     </form>
   )
 }

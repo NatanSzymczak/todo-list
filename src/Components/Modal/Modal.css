@@ -1,0 +1,22 @@
+.todo-modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(0,0,0, .8);
+}
+
+.todo-modal-close {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  color: white;
+  font-weight: bold;
+  font-size: 32px;
+  background-color: transparent;
+}
+
+.todo-modal-heading {
+  color: white;
+}
